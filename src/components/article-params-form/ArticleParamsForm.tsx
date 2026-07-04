@@ -18,29 +18,24 @@ import { Text } from 'src/ui/text';
 import { Separator } from 'src/ui/separator';
 
 type ArticleParamsFormProps = {
-	isOpen: boolean;
-	onOpen: () => void;
-	onClose: () => void;
 	onApply: (settings: ArticleStateType) => void;
 };
-
-export const ArticleParamsForm = ({
-	isOpen,
-	onOpen,
-	onClose,
-	onApply,
-}: ArticleParamsFormProps) => {
+export const ArticleParamsForm = ({ onApply }: ArticleParamsFormProps) => {
 	const [formState, setFormState] = useState(defaultArticleState);
+	const [isArticleFormOpen, setIsArticleFormOpen] = useState(false);
+	const handleToggle = () => {
+		setIsArticleFormOpen((prev) => !prev);
+	};
 	const asideRef = useRef<HTMLElement | null>(null);
 	useEffect(() => {
-		if (!isOpen) return;
+		if (!isArticleFormOpen) return;
 
 		const handleClick = (event: MouseEvent) => {
 			if (
 				asideRef.current &&
 				!asideRef.current.contains(event.target as Node)
 			) {
-				onClose();
+				setIsArticleFormOpen(false);
 			}
 		};
 
@@ -49,7 +44,7 @@ export const ArticleParamsForm = ({
 		return () => {
 			document.removeEventListener('mousedown', handleClick);
 		};
-	}, [isOpen, onClose]);
+	}, [isArticleFormOpen]);
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		onApply(formState);
@@ -61,10 +56,12 @@ export const ArticleParamsForm = ({
 	};
 	return (
 		<>
-			<ArrowButton isOpen={isOpen} onClick={onOpen} />
+			<ArrowButton isOpen={isArticleFormOpen} onClick={handleToggle} />
 			<aside
 				ref={asideRef}
-				className={clsx(styles.container, { [styles.container_open]: isOpen })}>
+				className={clsx(styles.container, {
+					[styles.container_open]: isArticleFormOpen,
+				})}>
 				<form
 					className={styles.form}
 					onSubmit={handleSubmit}
