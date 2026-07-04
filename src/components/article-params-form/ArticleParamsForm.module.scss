@@ -30,3 +30,7 @@
 	justify-content: space-between;
 	margin-top: auto;
 }
+
+.form > :not(:last-child) {
+	margin-bottom: 50px;
+}
